@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="theme-color" content="#0a1226"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RailPing – Train Booking Reminder</title>
+<style>
+:root{--bg:#0a1226;--sf:#111c36;--sf2:#18264a;--bd:rgba(255,255,255,.08);--tx:#f1f5ff;--mu:#93a1c4;--ac:#6ea8ff;--grad:linear-gradient(135deg,#2c4fd8,#3d7bf0);--open:linear-gradient(135deg,#0f7a3d,#16a34a);--tat:linear-gradient(135deg,#7f1d2d,#dc3545);--on:#fff;color-scheme:dark;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+[data-theme=forest]{--bg:#07150f;--sf:#0e2219;--sf2:#143124;--ac:#5be3a0;--grad:linear-gradient(135deg,#0f766e,#16a34a)}
+[data-theme=violet]{--bg:#120d24;--sf:#1b1438;--sf2:#261c4d;--ac:#b9a2ff;--grad:linear-gradient(135deg,#6d3be0,#8b5cf6)}
+[data-theme=daylight]{--bg:#eef2fb;--sf:#ffffff;--sf2:#f1f5fd;--bd:rgba(20,40,90,.1);--tx:#0f1b3a;--mu:#5b6a8c;--ac:#2c5be0;--grad:linear-gradient(135deg,#2c5be0,#3d8bf0);color-scheme:light}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+main{max-width:560px;margin:0 auto;padding:20px 16px 120px}
+.hd{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.logo{width:42px;height:42px;border-radius:14px;background:var(--grad);display:grid;place-items:center;font-size:21px;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.brand{font:800 20px system-ui,sans-serif;letter-spacing:-.02em}.tag{font-size:12px;color:var(--mu)}
+h1{font:800 30px/1.1 system-ui,sans-serif;letter-spacing:-.03em;margin:22px 0 6px}
+h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{color:var(--mu);margin-bottom:18px}
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:24px;padding:18px;margin-bottom:14px}
+label{display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);margin:0 0 7px;font-weight:600}
+input,textarea,select{width:100%;padding:14px;border:1px solid var(--bd);border-radius:16px;background:var(--sf2);color:var(--tx);font:inherit;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--ac)}
+input[type=date]{font-size:18px;font-weight:600;padding:16px}
+.hero{background:var(--grad);color:var(--on);border-radius:28px;padding:24px 20px;margin-bottom:14px;box-shadow:0 20px 50px rgba(0,0,0,.3);position:relative;overflow:hidden}
+.hero:after{content:"";position:absolute;right:-50px;top:-60px;width:190px;height:190px;border-radius:50%;background:rgba(255,255,255,.16)}
+.hero .k{font-size:11px;letter-spacing:.18em;text-transform:uppercase;font-weight:700;opacity:.8}
+.hero .d{font:800 27px/1.15 system-ui,sans-serif;margin:8px 0 2px;letter-spacing:-.02em}.hero .tm{opacity:.9}
+.tiles{display:flex;gap:8px;margin-top:16px;position:relative;z-index:1}
+.tiles i{font-style:normal;flex:1;background:rgba(0,0,0,.2);border-radius:16px;padding:10px 0;text-align:center;font:800 22px system-ui,sans-serif;font-variant-numeric:tabular-nums}
+.tiles i small{display:block;font:600 10px system-ui;letter-spacing:.12em;text-transform:uppercase;opacity:.75;margin-top:2px}
+.tiles.sm i{padding:7px 0;font-size:17px;border-radius:13px;background:var(--sf2);color:var(--tx)}
+.openb{display:inline-block;margin-top:14px;background:rgba(0,0,0,.22);padding:9px 16px;border-radius:99px;font-weight:700;position:relative;z-index:1}
+.sec{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mu);font-weight:700;margin:22px 4px 10px}
+.cls{display:grid;grid-template-columns:50px 1fr auto;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--bd)}
+.cls:first-child{border-top:0}
+.pill{background:var(--sf2);border-radius:13px;text-align:center;padding:8px 0;font:700 13px system-ui,sans-serif;color:var(--ac)}
+.cls .n{font-weight:600;font-size:14px}.cls .t{color:var(--mu);font-size:12px}
+.cd{font-variant-numeric:tabular-nums;font-weight:600;font-size:13px;text-align:right}.cd.open{color:var(--ac)}.cd.past{color:var(--mu)}
+.btn{border:0;border-radius:16px;padding:14px 18px;font:600 15px system-ui,sans-serif;cursor:pointer;background:var(--grad);color:var(--on);text-decoration:none;display:inline-block;text-align:center}
+.btn.sc{background:var(--sf2);color:var(--tx);border:1px solid var(--bd)}.btn.sm{padding:10px 14px;font-size:13px;border-radius:13px}.btn.w{width:100%}
+.btn.dg{background:transparent;color:#ff7b8a;border:1px solid rgba(255,123,138,.35)}
+.fromto{display:grid;grid-template-columns:1fr 46px 1fr;gap:8px;align-items:end;margin-bottom:12px}
+.swap{height:50px;border-radius:16px;border:1px solid var(--bd);background:var(--sf2);color:var(--ac);font-size:20px;cursor:pointer}
+.next{margin-bottom:16px}
+.list{padding:6px 6px;margin-bottom:14px}
+.row{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:12px;width:100%;text-align:left;background:transparent;border:0;border-top:1px solid var(--bd);color:var(--tx);padding:13px 10px;font:inherit;cursor:pointer}
+.row:first-child{border-top:0}
+.num{width:34px;height:34px;border-radius:11px;background:var(--grad);color:var(--on);display:grid;place-items:center;font:800 14px system-ui,sans-serif}
+.rt{font-weight:600}.rs{font-size:12px;color:var(--mu)}.chev{color:var(--mu);font-size:20px}
+.back{background:none;border:0;color:var(--ac);font:600 15px system-ui;cursor:pointer;padding:6px 0;margin-bottom:6px}
+.ev{margin-top:12px;border-radius:20px;padding:15px;background:var(--sf2);border:1px solid var(--bd)}
+.ev .h{display:flex;justify-content:space-between;align-items:center;gap:8px}.ev b{font:700 16px system-ui,sans-serif}
+.chips span{display:inline-block;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;background:var(--sf);margin:6px 4px 0 0;color:var(--ac)}
+.alarm{width:100%;margin-top:12px;padding:16px;border-radius:18px;border:1px solid var(--bd);background:var(--sf);color:var(--mu);font:700 16px system-ui;cursor:pointer;display:flex;gap:10px;align-items:center;justify-content:center}
+.alarm.on{background:var(--grad);color:var(--on);border:0;box-shadow:0 10px 28px rgba(0,0,0,.28)}
+.themes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.th{border:2px solid transparent;border-radius:18px;padding:0;background:none;cursor:pointer;color:var(--tx);font:600 12px system-ui;text-align:center}
+.th i{display:block;height:58px;border-radius:15px;margin-bottom:6px}.th.on{border-color:var(--ac)}
+.lead{display:flex;gap:8px;flex-wrap:wrap}.lead button{flex:1;padding:12px 0;border-radius:14px;border:1px solid var(--bd);background:var(--sf2);color:var(--tx);font:600 14px system-ui;cursor:pointer}
+.lead button.on{background:var(--grad);color:var(--on);border:0}
+.note{font-size:12px;color:var(--mu);margin:10px 2px;line-height:1.5}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:10px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:5;pointer-events:none}
+nav div{pointer-events:auto;display:flex;gap:4px;background:var(--sf);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--bd);box-shadow:0 14px 40px rgba(0,0,0,.35);border-radius:99px;padding:6px;width:100%;max-width:380px}
+nav button{flex:1;border:0;background:transparent;color:var(--mu);font:600 12px system-ui;padding:9px 0;border-radius:99px;cursor:pointer;display:flex;flex-direction:column;gap:2px;align-items:center}
+nav button.on{background:var(--grad);color:var(--on)}
+nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#toast{position:fixed;left:16px;right:16px;bottom:calc(96px + env(safe-area-inset-bottom,0px));max-width:420px;margin:0 auto;background:var(--tx);color:var(--bg);padding:13px 16px;border-radius:16px;display:none;z-index:9;font-size:14px;font-weight:500}
+#ring{position:fixed;inset:0;z-index:99;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;background:var(--bg)}
+#ring:before{content:"";position:absolute;inset:0;background:var(--grad);opacity:.35}
+#ring>*{position:relative}
+.bell{font-size:84px;animation:sh .5s infinite;display:block}
+@keyframes sh{0%,100%{transform:rotate(-14deg)}50%{transform:rotate(14deg)}}
+#ring h2{font:800 28px system-ui;margin:14px 0 6px}#ring p{color:var(--mu);margin:0 0 28px}
+#ring .btn{font-size:20px;padding:20px 48px;border-radius:99px}
+.hide{display:none}.empty{text-align:center;color:var(--mu);padding:34px 10px}
+
+.jd{background:var(--grad);color:#fff;border:0}.jd label{color:rgba(255,255,255,.85)}
+.jd input{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.45);color:#fff;color-scheme:dark}
+.jn{font-size:12px;color:rgba(255,255,255,.88);margin:10px 2px 0;line-height:1.5}
+.hero.op{background:var(--open)}.hero.up{background:var(--grad)}
+.hrow{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;position:relative;z-index:1}
+.cal{width:72px;border-radius:14px;overflow:hidden;background:#fff;color:#111;text-align:center;flex:none;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.cal b{display:block;background:#2563eb;color:#fff;font-size:11px;padding:4px 0;letter-spacing:.12em}.cal span{display:block;font:800 28px system-ui,sans-serif;padding:5px 0}
+.bdg{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:99px;background:rgba(255,255,255,.2);font-size:12px;font-weight:600;margin:10px 6px 0 0;position:relative;z-index:1;color:#fff}
+.tc .bdg{margin:0;flex:none;white-space:nowrap}.bdg.crit{background:rgba(220,53,69,.3);border:1px solid rgba(255,140,150,.7);color:#ffe0e3}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;position:relative;z-index:1}
+.stat{background:rgba(0,0,0,.2);border-radius:16px;padding:12px}.stat small{display:block;font-size:11px;opacity:.8;margin-bottom:2px}.stat b{font-size:22px}
+.prog{background:rgba(0,0,0,.2);border-radius:16px;padding:12px;margin-top:10px;position:relative;z-index:1}
+.prog .top,.prog .l{display:flex;justify-content:space-between;font-size:13px}.prog .l{font-size:12px;opacity:.9}.prog .top b{font-weight:600}
+.prog .bar{height:8px;border-radius:99px;background:rgba(255,255,255,.2);overflow:hidden;margin:9px 0}
+.prog .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#22c55e,#facc15,#f97316)}
+.hero .btn.sc{background:rgba(255,255,255,.18);color:#fff;border:1px solid rgba(255,255,255,.3);margin-top:12px;position:relative;z-index:1}
+.sum{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sum div{background:var(--sf2);border:1px solid var(--bd);border-radius:14px;padding:11px}
+.sum small{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);margin-bottom:2px}.sum b{font-size:15px;font-weight:600}
+.nxt{margin-top:12px;border-radius:14px;padding:13px;background:var(--grad);color:#fff;font-weight:600}
+.tc{border-radius:24px;padding:18px;margin-bottom:14px;background:var(--tat);color:#fff;box-shadow:0 14px 34px rgba(0,0,0,.25)}
+.tc .h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}.tc h3{margin:0;font-size:26px;font-weight:800;letter-spacing:-.02em}
+.tc .s{opacity:.9;margin-top:2px}.tc .chips span{background:rgba(0,0,0,.22);color:#fff}
+.tc .o{text-align:center;opacity:.92;margin-top:12px;font-size:13px}
+[data-theme=amoled]{--bg:#000;--sf:#0c0c10;--sf2:#17171e;--bd:rgba(255,255,255,.1);--ac:#7db4ff;--grad:linear-gradient(135deg,#1d3fb8,#2f6fe0)}
+body{transition:background .3s,color .3s}
+select{appearance:none;-webkit-appearance:none}
+.acts{display:flex;gap:8px;flex-wrap:wrap}
+.pr{background:var(--sf2);border:1px solid var(--bd);border-radius:16px;padding:10px;margin-bottom:8px}
+.pr input,.pr select{background:var(--sf)}
+.pr .g3{display:grid;grid-template-columns:76px 1fr 1fr;gap:8px;margin-top:8px}
+.ck{display:flex;gap:12px;align-items:center;width:100%;padding:12px 0;border:0;border-top:1px solid var(--bd);background:none;color:var(--tx);font:inherit;text-align:left;cursor:pointer}
+.bx{width:22px;height:22px;border-radius:7px;border:2px solid var(--mu);display:grid;place-items:center;flex:none;font-size:13px;font-weight:800;color:var(--on)}
+.ck.on .bx{background:var(--grad);border-color:transparent}.ck.on span:last-child{color:var(--mu);text-decoration:line-through}
+button:disabled{opacity:.4}
+</style></head><body><main>
+<div class="hd"><div class="logo">🚆</div><div><div class="brand">RailPing</div><div class="tag">Never miss a booking window</div></div></div>
+
+<section id="p1">
+ <h1>When does <em>booking</em> open?</h1>
+ <div class="sub">Pick your journey date. We do the rest.</div>
+ <div class="card jd"><label for="dt">Select journey date</label><input id="dt" type="date"><div class="jn">Advance booking opens 60 days before the journey date (journey day excluded) at 8:00 AM IST. On opening day only Aadhaar-verified IRCTC accounts can book online, and Tatkal needs an Aadhaar OTP.</div></div>
+ <div id="res"></div>
+</section>
+
+<section id="p2" class="hide"><div id="tv"></div></section>
+
+<section id="p3" class="hide">
+ <h1>Alarm &amp; <em>style</em></h1>
+ <div class="sub">Make it ring loud. Make it yours.</div>
+ <div class="card"><label>Alarm</label>
+  <button class="btn w" id="en" style="padding:20px;font-size:17px">🔔 Enable &amp; test alarm</button>
+  <div class="note" id="nfs"></div>
+  <label style="margin-top:14px">Ring before booking opens</label>
+  <div class="lead" id="lead"></div>
+  <div class="note">Alarms ring (sound, vibration, full screen) while RailPing is open. Browsers cannot ring a closed page, so also tap “+ Calendar” on a trip for background reminders.</div>
+ </div>
+ <div class="card"><label>Backup</label><div class="acts"><button class="btn sc sm" id="bx">Copy backup</button><button class="btn sc sm" id="bi">Restore</button></div><textarea id="bt" rows="2" style="margin-top:10px" placeholder="Paste a backup here, then tap Restore"></textarea></div>
+ <div class="card"><label>Theme</label><div class="themes" id="themes"></div></div>
+ <div class="note">General booking opens 60 days before the journey (journey day excluded) at 8:00 AM. Tatkal opens 1 day before: 10:00 AM for AC, 11:00 AM for non-AC. All times IST. Confirm on IRCTC; special trains can differ.</div>
+</section>
+</main>
+
+<nav><div>
+<button id="n1" class="on"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>Plan</button>
+<button id="n2"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Trips</button>
+<button id="n3"><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 8 3 8H3s3-1 3-8M10 21a2 2 0 0 0 4 0"/></svg>Alarm</button>
+</div></nav>
+<div id="toast"></div>
+<div id="ring"><span class="bell">⏰</span><h2 id="rt">Booking opens!</h2><p id="rp"></p><button class="btn" id="stop">Stop alarm</button></div>
+
+<script>
+const IST=330*60000;
+const AC=[['1A','First AC'],['2A','Second AC'],['3A','Third AC'],['3E','Third AC Economy'],['CC','Chair Car'],['EC','Executive Chair']],NON=[['SL','Sleeper'],['2S','Second Sitting']];
+const THEMES=[['auto','Auto','linear-gradient(135deg,#0a1226 50%,#eef2fb 50%)'],['midnight','Midnight','linear-gradient(135deg,#2c4fd8,#3d7bf0)'],['forest','Forest','linear-gradient(135deg,#0f766e,#16a34a)'],['violet','Violet','linear-gradient(135deg,#6d3be0,#8b5cf6)'],['amoled','Black','linear-gradient(135deg,#000,#1d3fb8)'],['daylight','Daylight','linear-gradient(135deg,#eef2fb,#c9d6f5)']];
+const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let trips=ld('rr2_trips',[]),fired=ld('rr3_fired',{}),curDate=ld('rr2_date',''),S=ld('rr3_set',{theme:'auto',lead:10});
+let openId=null,view=1;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const inst=(ds,o,h,m)=>{const[y,mo,d]=ds.split('-').map(Number);return Date.UTC(y,mo-1,d+o,h,m)-IST};
+const F=(t,o)=>new Date(t).toLocaleString('en-IN',Object.assign({timeZone:'Asia/Kolkata'},o));
+const fDate=t=>F(t,{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+const fTime=t=>F(t,{hour:'numeric',minute:'2-digit'})+' IST';
+const fJ=ds=>fDate(inst(ds,0,12,0));
+const evs=ds=>({gen:inst(ds,-60,8,0),tac:inst(ds,-1,10,0),tnon:inst(ds,-1,11,0)});
+const z=n=>String(n).padStart(2,'0');
+const items=t=>{const e=evs(t.date);return[
+ ['gen','General booking',e.gen,AC.concat(NON).map(c=>c[0])],
+ ['tac','Tatkal AC',e.tac,AC.map(c=>c[0])],
+ ['tnon','Tatkal Non-AC',e.tnon,NON.map(c=>c[0])]]};
+const title=t=>(t.fr||'Journey')+(t.to?' → '+t.to:'');
+trips.forEach(t=>{if(!t.al)t.al={gen:1,tac:1,tnon:1}});
+if(!THEMES.some(t=>t[0]===S.theme))S.theme='auto';
+function parts(at,jd){const now=Date.now();if(now>inst(jd,1,0,0))return null;const d=at-now;if(d<=0)return 0;const s=Math.floor(d/1e3);return[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60]}
+const tiles=(at,jd,sm)=>`<div class="tiles${sm?' sm':''}" data-at="${at}" data-j="${jd}"></div>`;
+const cdS=(at,jd)=>`<span class="cd" data-at="${at}" data-j="${jd}"></span>`;
+const mq=matchMedia('(prefers-color-scheme: light)');
+function applyTheme(){let t=S.theme;if(t==='auto')t=mq.matches?'daylight':'midnight';document.documentElement.dataset.theme=t;const m=document.querySelector('meta[name=theme-color]');if(m)m.content={daylight:'#eef2fb',amoled:'#000',forest:'#07150f',violet:'#120d24',midnight:'#0a1226'}[t];sv('rr3_set',S)}
+try{mq.addEventListener('change',()=>{if(S.theme==='auto')applyTheme()})}catch(e){}
+function toast(m){const e=$('toast');e.textContent=m;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',4500)}
+
+/* ---------- Plan ---------- */
+const sd=t=>F(t,{day:'numeric',month:'short',year:'numeric'});
+const chips=a=>'<div class="chips">'+a.map(c=>`<span>${c[0]}</span>`).join('')+'</div>';
+const tcard=(n,cl,at,ds)=>`<div class="tc"><div class="h"><div><h3>${n}</h3><div class="s">Tatkal Countdown</div>${chips(cl)}</div><span class="bdg" data-bat="${at}" data-bj="${ds}"></span></div>${tiles(at,ds)}<div class="o">Opens ${fDate(at)} at ${fTime(at)}</div></div>`;
+function dur(ms){const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60);return d?d+' Day'+(d>1?'s':'')+' '+h+' Hour'+(h==1?'':'s'):h?h+' Hour'+(h>1?'s':'')+' '+m+' Min':m+' Min'}
+function badges(){const now=Date.now();
+ document.querySelectorAll('[data-bat]').forEach(e=>{const p=parts(+e.dataset.bat,e.dataset.bj);e.textContent=p===null?'● Journey over':p===0?'● Open':'● Upcoming'});
+ document.querySelectorAll('[data-nxj]').forEach(e=>{const ds=e.dataset.nxj,x=evs(ds),L=[['General booking',x.gen],['AC Tatkal',x.tac],['Non-AC Tatkal',x.tnon]].filter(a=>a[1]>now).sort((a,b)=>a[1]-b[1])[0];
+  e.textContent=L?'🚆 Next: '+L[0]+' opens in '+dur(L[1]-now):(now>inst(ds,1,0,0)?'Journey completed':'✅ All booking windows are open')})}
+function plan(){const ds=$('dt').value;sv('rr2_date',ds);const R=$('res');
+ if(!ds){R.innerHTML='<div class="empty">Choose a date to see your full booking schedule.</div>';return}
+ const e=evs(ds),now=Date.now(),js=inst(ds,0,0,0),over=now>inst(ds,1,0,0),open=now>=e.gen,
+  ago=Math.max(0,Math.floor((now-e.gen)/864e5)),left=Math.max(0,Math.ceil((js-now)/864e5)),
+  pct=Math.max(0,Math.min(100,Math.round((now-e.gen)/(js-e.gen)*100))),
+  st=over?'Journey over':open?'Booking Open':'Upcoming',opensIn=Math.max(0,Math.ceil((e.gen-now)/864e5));
+ R.innerHTML=`<div class="hero ${open?'op':'up'}"><div class="hrow"><div><div class="k">General booking</div><div class="d">${F(e.gen,{day:'numeric',month:'long',year:'numeric'})}</div><div class="tm">${F(e.gen,{weekday:'long'})}</div></div>
+  <div class="cal"><b>${F(e.gen,{month:'short'}).toUpperCase()}</b><span>${F(e.gen,{day:'numeric'})}</span></div></div>
+  <span class="bdg">● ${st}</span>${open&&!over&&left<=10?'<span class="bdg crit">● Booking Critical</span>':''}
+  <div class="stats"><div class="stat"><small>Booking time</small><b>${fTime(e.gen).replace(' IST','').toUpperCase()}</b><small>IST</small></div>
+  <div class="stat"><small>${open?'Days ago':'Opens in'}</small><b>${open?ago:opensIn} Days</b></div></div>
+  ${open?`<div class="prog"><div class="top"><b>Booking window progress</b><b>${pct}%</b></div><div class="bar"><i style="width:${pct}%"></i></div><div class="l"><span>${Math.min(ago,60)} days passed</span><span>${left} days remaining</span></div></div>`:tiles(e.gen,ds)}
+  <button class="btn sc sm" id="shr">Share schedule</button></div>
+ <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b style="font-size:17px">Quick summary</b><span class="chips"><span style="margin:0">${st}</span></span></div>
+  <div class="sum"><div><small>Journey date</small><b>${sd(js+43200000)}</b></div><div><small>Booking open date</small><b>${sd(e.gen)}</b></div><div><small>Current status</small><b>${st}</b></div><div><small>Days remaining</small><b>${left} Days</b></div></div>
+  <div class="nxt" data-nxj="${ds}"></div></div>
+ ${tcard('AC',AC,e.tac,ds)}${tcard('Non-AC (SL/Sleeper)',NON,e.tnon,ds)}
+ <div class="sec">Save this trip</div><div class="card">
+  <div class="fromto"><div><label>From</label><input id="fr" placeholder="Source"></div><button class="swap" id="sw" aria-label="Swap">⇄</button><div><label>To</label><input id="to" placeholder="Destination"></div></div>
+  <label>Train (optional)</label><input id="tr" placeholder="Number or name" style="margin-bottom:12px">
+  <button class="btn w" id="sv">Save &amp; set alarms</button></div>`;
+ $('shr').onclick=()=>{const tx='Journey '+fJ(ds)+'\nGeneral booking opens '+fDate(e.gen)+', '+fTime(e.gen)+'\nTatkal AC: '+fDate(e.tac)+', '+fTime(e.tac)+'\nTatkal Non-AC: '+fDate(e.tnon)+', '+fTime(e.tnon);
+  if(navigator.share)navigator.share({title:'RailPing',text:tx}).catch(()=>{});else{try{navigator.clipboard.writeText(tx).then(()=>toast('Schedule copied'))}catch(x){toast('Sharing unavailable here')}}};
+ $('sw').onclick=()=>{const a=$('fr').value;$('fr').value=$('to').value;$('to').value=a};
+ $('sv').onclick=()=>{trips.push({id:'t'+Date.now(),date:ds,fr:$('fr').value.trim(),to:$('to').value.trim(),tr:$('tr').value.trim(),nt:'',al:{gen:1,tac:1,tnon:1}});sv('rr2_trips',trips);toast('Saved with alarms on. See the Trips tab.')};
+ tick()}
+
+/* ---------- Trips ---------- */
+function nextEv(){let b=null;const now=Date.now();trips.forEach(t=>items(t).forEach(([k,n,at])=>{if(at>now&&t.al[k]&&(!b||at<b.at))b={t,n,at}}));return b}
+function renderTrips(){const V=$('tv');
+ if(openId){const t=trips.find(x=>x.id===openId);if(t)return detail(t,V);openId=null}
+ trips.sort((a,b)=>a.date.localeCompare(b.date));
+ const nx=nextEv();
+ let h='<h1>Your <em>trips</em></h1>';
+ if(!trips.length){V.innerHTML=h+'<div class="empty">No trips yet.<br>Plan a journey and tap “Save &amp; set alarms”.</div>';return}
+ if(nx)h+=`<div class="hero next"><div class="k">Next alarm</div><div class="d" style="font-size:20px">${nx.n} · ${esc(title(nx.t))}</div><div class="tm">${fDate(nx.at)}, ${fTime(nx.at)}</div>${tiles(nx.at,nx.t.date)}</div>`;
+ h+='<div class="card list">'+trips.map((t,i)=>{const n=items(t).find(x=>x[2]>Date.now());return`<button class="row" data-open="${t.id}"><span class="num">${i+1}</span><div><div class="rt">${esc(title(t))}</div><div class="rs">${fJ(t.date)}${t.tr?' · '+esc(t.tr):''}${ckn(t)?' · ✓'+ckn(t)+'/'+CK.length:''}${n?' · '+n[1]+' '+fDate(n[2]).split(',')[1].trim().split(' ').slice(0,2).join(' '):' · all windows open'}</div></div><span class="chev">›</span></button>`}).join('')+'</div>';
+ V.innerHTML=h;tick()}
+function detail(t,V){
+ V.innerHTML=`<button class="back" id="bk">‹ All trips</button>
+ <div class="card"><div class="fromto"><div><label>From</label><input data-f="fr" value="${esc(t.fr)}"></div><button class="swap" id="sw2" aria-label="Swap">⇄</button><div><label>To</label><input data-f="to" value="${esc(t.to)}"></div></div>
+ <div class="fromto" style="grid-template-columns:1fr 1fr;margin:0"><div><label>Journey date</label><input type="date" data-f="date" value="${t.date}" style="font-size:15px;padding:13px"></div><div><label>Train</label><input data-f="tr" value="${esc(t.tr)}"></div></div></div>
+ ${items(t).map(([k,n,at,cl])=>`<div class="ev"><div class="h"><b>${n}</b></div><div class="chips">${cl.map(c=>`<span>${c}</span>`).join('')}</div>
+  <div class="rs" style="margin-top:8px">Opens ${fDate(at)}, ${fTime(at)}</div>${tiles(at,t.date,1)}
+  <button class="alarm ${t.al[k]?'on':''}" data-al="${k}">${t.al[k]?'⏰ Alarm ON · '+(S.lead?S.lead+' min before':'at opening'):'🔕 Alarm off · tap to turn on'}</button>
+  <div class="acts" style="margin-top:10px"><a class="btn sc sm" target="_blank" rel="noopener" href="${gcal(t,n,at)}">+ Calendar</a></div></div>`).join('')}
+ ${extra(t)}
+ <div class="card" style="margin-top:14px"><label>Notes</label><textarea data-f="nt" rows="3" placeholder="Passengers, berth preference, boarding station…">${esc(t.nt)}</textarea>
+ <div class="acts" style="margin-top:12px"><button class="btn sc sm" id="ics">Download .ics with alarms</button><button class="btn dg sm" id="del">Delete trip</button></div></div>`;
+ tick()}
+const CK=[['irctc','IRCTC login tested, password remembered'],['aad','Aadhaar linked to IRCTC (needed for Tatkal and opening-day booking)'],['pax','Passengers saved in IRCTC Master List'],['pay','UPI, card or wallet ready with balance'],['trn','Train, class and boarding station decided'],['alt','Backup train or date picked'],['id','Original photo ID to carry while travelling']];
+const ckn=t=>CK.filter(c=>(t.ck||{})[c[0]]).length;
+const opt=(a,v)=>a.map(x=>{const k=Array.isArray(x)?x[0]:x,n=Array.isArray(x)?x[1]:x;return`<option value="${k}"${v===k?' selected':''}>${n}</option>`}).join('');
+const QUO=['General','Tatkal','Ladies','Senior Citizen'],BERTH=[['NP','No preference'],['LB','Lower'],['MB','Middle'],['UB','Upper'],['SL','Side Lower'],['SU','Side Upper']],GEN=[['M','Male'],['F','Female'],['T','Other']];
+function extra(t){t.pax=t.pax||[];const mx=t.quo==='Tatkal'?4:6;
+return `<div class="card" style="margin-top:14px"><label>Booking details</label>
+<div class="fromto" style="grid-template-columns:1fr 1fr;margin-bottom:12px"><div><label>Class</label><select data-f="cls">${opt([['','Select']].concat(AC.concat(NON).map(c=>[c[0],c[0]+' · '+c[1]])),t.cls||'')}</select></div><div><label>Quota</label><select data-f="quo">${opt(QUO,t.quo||'General')}</select></div></div>
+<label>Boarding station</label><input data-f="bs" value="${esc(t.bs)}" placeholder="Station name or code"></div>
+<div class="card"><label>Passengers (${t.pax.length}/${mx})</label>${t.pax.map((p,i)=>`<div class="pr"><div style="display:flex;gap:8px"><input data-p="${i}" data-pf="n" value="${esc(p.n)}" placeholder="Name as on ID"><button class="btn dg sm" data-delp="${i}" aria-label="Remove">✕</button></div><div class="g3"><input data-p="${i}" data-pf="a" type="number" min="1" max="120" value="${esc(p.a)}" placeholder="Age"><select data-p="${i}" data-pf="g">${opt(GEN,p.g)}</select><select data-p="${i}" data-pf="b">${opt(BERTH,p.b)}</select></div></div>`).join('')}
+<div class="acts"><button class="btn sc sm" id="addp"${t.pax.length>=mx?' disabled':''}>+ Add passenger</button>${t.pax.length?'<button class="btn sc sm" id="cpx">Copy list</button>':''}</div>
+${t.quo==='Tatkal'?'<div class="note">Tatkal allows up to 4 passengers per ticket.</div>':''}</div>
+<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><label style="margin:0">Booking checklist</label><b id="ckn" style="color:var(--ac)">${ckn(t)}/${CK.length}</b></div>${CK.map(c=>`<button class="ck${(t.ck||{})[c[0]]?' on':''}" data-ck="${c[0]}"><span class="bx">${(t.ck||{})[c[0]]?'✓':''}</span><span>${c[1]}</span></button>`).join('')}
+<a class="btn w" style="margin-top:12px" target="_blank" rel="noopener" href="https://www.irctc.co.in/">Open IRCTC</a></div>
+<div class="card"><label>Return trip</label><div class="acts" style="flex-wrap:nowrap"><input type="date" id="rd" min="${t.date}"><button class="btn sc sm" id="ret" style="white-space:nowrap">Create</button></div></div>`}
+const utc=t=>new Date(t).toISOString().replace(/[-:]|\.\d{3}/g,'');
+const nm=(t,l)=>`Book ${l} – ${title(t)}${t.tr?' ('+t.tr+')':''}`;
+const gcal=(t,l,at)=>'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent(nm(t,l))+'&dates='+utc(at)+'/'+utc(at+18e5)+'&details='+encodeURIComponent('Journey: '+fJ(t.date)+'\n'+(t.nt||''));
+function ics(t){const L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//RailPing//EN'];
+ items(t).forEach(([k,n,at],i)=>{L.push('BEGIN:VEVENT','UID:'+t.id+i+'@railping','DTSTAMP:'+utc(Date.now()),'DTSTART:'+utc(at),'DTEND:'+utc(at+18e5),'SUMMARY:'+nm(t,n).replace(/,/g,' '),'DESCRIPTION:Journey '+fJ(t.date).replace(/,/g,'')+' '+(t.nt||'').replace(/[\n,;]/g,' '));
+ [['-P1D','1 day'],['-PT1H','1 hour'],['-PT10M','10 min']].forEach(a=>L.push('BEGIN:VALARM','ACTION:DISPLAY','DESCRIPTION:Booking in '+a[1],'TRIGGER:'+a[0],'END:VALARM'));L.push('END:VEVENT')});
+ L.push('END:VCALENDAR');return L.join('\r\n')}
+function dl(t){try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([ics(t)],{type:'text/calendar'}));a.download='booking-'+t.date+'.ics';document.body.appendChild(a);a.click();a.remove();toast('Calendar file created. If nothing downloaded, use the + Calendar buttons.')}catch(e){toast('Download unavailable here. Use the + Calendar buttons.')}}
+$('tv').onclick=e=>{const b=e.target.closest('button,a');if(!b)return;const d=b.dataset;
+ if(d.open){openId=d.open;renderTrips();window.scrollTo(0,0)}
+ if(b.id==='bk'){openId=null;renderTrips()}
+ const t=trips.find(x=>x.id===openId);if(!t)return;
+ if(b.id==='sw2'){[t.fr,t.to]=[t.to,t.fr];sv('rr2_trips',trips);renderTrips()}
+ if(d.al){unlock();t.al[d.al]=t.al[d.al]?0:1;sv('rr2_trips',trips);renderTrips();toast(t.al[d.al]?'Alarm on. It rings while RailPing is open.':'Alarm off.')}
+ if(b.id==='ics')dl(t);
+ if(b.id==='addp'&&t.pax.length<(t.quo==='Tatkal'?4:6)){t.pax.push({n:'',a:'',g:'M',b:'NP'});sv('rr2_trips',trips);renderTrips()}
+ if(d.delp!==undefined){t.pax.splice(+d.delp,1);sv('rr2_trips',trips);renderTrips()}
+ if(d.ck){t.ck=t.ck||{};t.ck[d.ck]=t.ck[d.ck]?0:1;sv('rr2_trips',trips);b.classList.toggle('on');b.firstChild.textContent=t.ck[d.ck]?'✓':'';$('ckn').textContent=ckn(t)+'/'+CK.length;try{navigator.vibrate&&navigator.vibrate(12)}catch(x){}}
+ if(b.id==='cpx'){const tx=title(t)+' · '+fJ(t.date)+(t.cls?' · '+t.cls:'')+(t.quo?' · '+t.quo:'')+'\n'+t.pax.map((p,i)=>(i+1)+'. '+p.n+', '+p.a+', '+p.g+', '+p.b).join('\n');try{navigator.clipboard.writeText(tx).then(()=>toast('Passenger list copied'))}catch(x){toast('Copy unavailable here')}}
+ if(b.id==='ret'){const r=$('rd').value;if(!r)return toast('Pick the return date first');const n={id:'t'+Date.now(),date:r,fr:t.to,to:t.fr,tr:'',nt:'',al:{gen:1,tac:1,tnon:1},cls:t.cls,quo:t.quo,bs:'',pax:JSON.parse(JSON.stringify(t.pax||[])),ck:{}};trips.push(n);sv('rr2_trips',trips);openId=n.id;renderTrips();window.scrollTo(0,0);toast('Return trip created')}
+ if(b.id==='del'&&confirm('Delete this trip?')){trips=trips.filter(x=>x.id!==t.id);sv('rr2_trips',trips);openId=null;renderTrips()}};
+$('tv').oninput=e=>{const x=e.target.dataset,t=trips.find(y=>y.id===openId);if(!t)return;if(x.f)t[x.f]=e.target.value;else if(x.p!==undefined&&t.pax[+x.p])t.pax[+x.p][x.pf]=e.target.value;else return;sv('rr2_trips',trips)};
+$('tv').onchange=e=>{const f=e.target.dataset.f;if((f==='date'&&e.target.value)||f==='quo')renderTrips()};
+
+/* ---------- Alarm ---------- */
+let ctx=null,rt=null;
+function unlock(){try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)();if(ctx.state==='suspended')ctx.resume()}catch(e){}}
+function beep(){if(!ctx)return;try{const t=ctx.currentTime;[880,1175].forEach((f,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+i*.22);g.gain.exponentialRampToValueAtTime(.5,t+i*.22+.02);g.gain.exponentialRampToValueAtTime(.0001,t+i*.22+.2);o.connect(g);g.connect(ctx.destination);o.start(t+i*.22);o.stop(t+i*.22+.25)})}catch(e){}}
+function ring(h,p){$('rt').textContent=h;$('rp').textContent=p;$('ring').style.display='flex';clearInterval(rt);const go=()=>{beep();try{navigator.vibrate&&navigator.vibrate([400,150,400])}catch(e){}};go();rt=setInterval(go,1200);clearTimeout(ring.t);ring.t=setTimeout(stop,9e4);
+ try{if('Notification' in window&&Notification.permission==='granted')new Notification(h,{body:p})}catch(e){}}
+function stop(){clearInterval(rt);$('ring').style.display='none';try{navigator.vibrate&&navigator.vibrate(0)}catch(e){}}
+$('stop').onclick=stop;
+$('en').onclick=()=>{unlock();try{Notification.requestPermission().then(nfs)}catch(e){}ring('Test alarm','This is how your booking alarm will look and sound.')};
+function nfs(){$('nfs').textContent=!('Notification' in window)?'Sound, vibration and full-screen alert work. System notifications are unavailable here.':'Notifications: '+Notification.permission+'. Tap the button to test sound and vibration.'}
+function tick(){document.querySelectorAll('[data-at]').forEach(e=>{const p=parts(+e.dataset.at,e.dataset.j);
+ if(e.classList.contains('tiles'))e.innerHTML=p===null?'<i style="flex:1;font-size:15px">Journey over</i>':p===0?'<i style="flex:1;font-size:17px">Open now ✓</i>':['d','h','m','s'].map((u,i)=>`<i>${z(p[i])}<small>${{d:'Days',h:'Hrs',m:'Min',s:'Sec'}[u]}</small></i>`).join('');
+ else{e.textContent=p===null?'Journey over':p===0?'Open now':(p[0]?p[0]+'d ':'')+z(p[1])+'h '+z(p[2])+'m '+z(p[3])+'s';e.className='cd '+(p===0?'open':p===null?'past':'')}});
+ badges();const now=Date.now();trips.forEach(t=>items(t).forEach(([k,n,at])=>{const w=at-S.lead*6e4,key=t.id+k+at+S.lead;
+ if(t.al[k]&&now>=w&&now<w+6e5&&!fired[key]){fired[key]=1;sv('rr3_fired',fired);ring('Booking '+(S.lead?'opens in '+S.lead+' min':'opens now'),n+' · '+title(t)+' · '+fJ(t.date))}}))}
+
+/* ---------- Settings ---------- */
+function drawSet(){$('themes').innerHTML=THEMES.map(([k,n,g])=>`<button class="th ${S.theme===k?'on':''}" data-th="${k}"><i style="background:${g}"></i>${n}</button>`).join('');
+ $('lead').innerHTML=[0,5,10,30,60].map(m=>`<button class="${S.lead===m?'on':''}" data-ld="${m}">${m?m+' min':'On time'}</button>`).join('')}
+$('p3').onclick=e=>{const b=e.target.closest('button');if(!b)return;
+ if(b.id==='bx'){try{navigator.clipboard.writeText(JSON.stringify({trips,S})).then(()=>toast('Backup copied'))}catch(x){toast('Copy unavailable here')}}
+ if(b.id==='bi'){try{const o=JSON.parse($('bt').value);if(!Array.isArray(o.trips))throw 0;trips=o.trips;sv('rr2_trips',trips);if(o.S)S=Object.assign(S,o.S);applyTheme();drawSet();toast('Restored '+trips.length+' trips')}catch(x){toast('That backup text is not valid')}}
+if(b.dataset.th){S.theme=b.dataset.th;applyTheme();drawSet()}if(b.dataset.ld!==undefined){S.lead=+b.dataset.ld;sv('rr3_set',S);drawSet()}};
+
+/* ---------- Nav ---------- */
+function tab(n){view=n;[1,2,3].forEach(i=>{$('p'+i).classList.toggle('hide',i!==n);$('n'+i).classList.toggle('on',i===n)});window.scrollTo(0,0);if(n===2)renderTrips();if(n===3)drawSet();tick()}
+[1,2,3].forEach(i=>$('n'+i).onclick=()=>tab(i));
+$('dt').oninput=plan;$('dt').value=curDate;
+applyTheme();nfs();plan();setInterval(tick,1000);
+</script></body></html>
