@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="theme-color" content="#0a1226"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="RailPing"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>RailPing – Train Booking Reminder</title>
 <style>
 :root{--bg:#0a1226;--sf:#111c36;--sf2:#18264a;--bd:rgba(255,255,255,.08);--tx:#f1f5ff;--mu:#93a1c4;--ac:#6ea8ff;--grad:linear-gradient(135deg,#2c4fd8,#3d7bf0);--open:linear-gradient(135deg,#0f7a3d,#16a34a);--tat:linear-gradient(135deg,#7f1d2d,#dc3545);--on:#fff;color-scheme:dark;
@@ -304,4 +309,5 @@ function tab(n){view=n;[1,2,3].forEach(i=>{$('p'+i).classList.toggle('hide',i!==
 [1,2,3].forEach(i=>$('n'+i).onclick=()=>tab(i));
 $('dt').oninput=plan;$('dt').value=curDate;
 applyTheme();nfs();plan();setInterval(tick,1000);
-</script></body></html>
+</script><script>if('serviceWorker' in navigator&&location.protocol!=='file:')addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));</script>
+</body></html>
